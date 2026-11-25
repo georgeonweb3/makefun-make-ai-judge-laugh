@@ -52,6 +52,11 @@ def main() -> None:
     assert ENTRY.strip(), "entry must not be only whitespace"
     assert ENTRY == ENTRY.strip(), "entry must not start or end with whitespace"
     assert ENTRY.encode("utf-8").decode("utf-8") == ENTRY
+    # No control characters: the gate reads the file as text, and a
+    # stray control byte would make the line unreadable aloud.
+    assert all(ord(ch) >= 32 or ch in "\t" for ch in ENTRY), (
+        "entry must not contain control characters"
+    )
     directory = os.path.dirname(OUTPUT_PATH)
     if directory:
         os.makedirs(directory, exist_ok=True)
